@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CENTUM ELECTRONICS LIMITED | Professional Bending Stress Analysis Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .input-group:focus-within label {
+            color: #3b82f6;
+        }
+        .input-group:focus-within input {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .tab-active {
+            background: #3b82f6;
+            color: white;
+        }
+        .stress-bar {
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); }
+        }
+        .glow-effect {
+            animation: pulse-glow 3s infinite;
+        }
+        .formula-box {
+            background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Hero Section -->
+    <header class="gradient-hero text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10">
+            <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5"/>
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+
+        <nav class="relative z-10 container mx-auto px-6 py-6 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xl">C</div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-wider">CENTUM ELECTRONICS</h1>
+                    <p class="text-xs text-slate-400 tracking-widest">LIMITED</p>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
+                <a href="#calculator" class="hover:text-white transition">Calculator</a>
+                <a href="#formulas" class="hover:text-white transition">Formulas</a>
+                <a href="#analysis" class="hover:text-white transition">Analysis</a>
+            </div>
+        </nav>
+
+        <div class="relative z-10 container mx-auto px-6 py-20 md:py-32 text-center">
+            <div class="inline-block px-4 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-sm font-medium mb-6">
+                Engineering Analysis Suite v2.0
+            </div>
+            <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                Professional Bending Stress<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Analysis Tool</span>
+            </h2>
+            <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10">
+                Advanced structural engineering calculator for multi-directional load analysis. 
+                Compute bending stress, moment of inertia, and factor of safety for precision electronic components.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#calculator" class="px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-lg font-semibold transition glow-effect">
+                    Launch Calculator
+                </a>
+                <a href="#formulas" class="px-8 py-4 glass-panel hover:bg-white/10 rounded-lg font-semibold transition">
+                    View Formulas
+                </a>
+            </div>
+
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-3xl mx-auto text-center">
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">3</div>
+                    <div class="text-sm text-slate-400 mt-1">Load Directions</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">σ = Mc/I</div>
+                    <div class="text-sm text-slate-400 mt-1">Core Formula</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">1σ / 3σ</div>
+                    <div class="text-sm text-slate-400 mt-1">Sigma Levels</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-blue-400">FOS</div>
+                    <div class="text-sm text-slate-400 mt-1">Safety Factor</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Formula Reference Section -->
+    <section id="formulas" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-4">Engineering Formulas</h3>
+                <p class="text-slate-600 max-w-2xl mx-auto">Core equations used in the bending stress analysis based on Euler-Bernoulli beam theory.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <div class="formula-box p-6 rounded-xl text-white border border-slate-600">
+                    <div class="text-blue-400 text-sm font-semibold mb-2 uppercase tracking-wider">Primary Formula</div>
+                    <div class="text-2xl font-mono font-bold mb-3">σ = (M × c) / I</div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• σ = Bending Stress (Pa or N/m²)</li>
+                        <li>• M = Bending Moment (N·m)</li>
+                        <li>• c = Distance to neutral axis (m)</li>
+                        <li>• I = Moment of Inertia (m⁴)</li>
+                    </ul>
+                </div>
+
+                <div class="formula-box p-6 rounded-xl text-white border border-slate-600">
+                    <div class="text-cyan-400 text-sm font-semibold mb-2 uppercase tracking-wider">Moment of Inertia</div>
+                    <div class="text-2xl font-mono font-bold mb-3">I = (b × h³) / 12</div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• b = Width of cross-section (m)</li>
+                        <li>• h = Height/Thickness (m)</li>
+                        <li>• For rectangular sections</li>
+                        <li>• Neutral axis at centroid</li>
+                    </ul>
+                </div>
+
+                <div class="formula-box p-6 rounded-xl text-white border border-slate-600">
+                    <div class="text-emerald-400 text-sm font-semibold mb-2 uppercase tracking-wider">Safety Factor</div>
+                    <div class="text-2xl font-mono font-bold mb-3">FOS = σ_yield / σ_max</div>
+                    <ul class="text-sm text-slate-300 space-y-1">
+                        <li>• FOS > 1.5 (Typical minimum)</li>
+                        <li>• σ_yield = Material yield stress</li>
+                        <li>• σ_max = Maximum bending stress</li>
+                        <li>• Al 6061: σ_yield = 240 MPa</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section id="calculator" class="py-16 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-4">Interactive Stress Calculator</h3>
+                <p class="text-slate-600">Select load direction and sigma level to perform real-time analysis.</p>
+            </div>
+
+            <!-- Direction Tabs -->
+            <div class="max-w-5xl mx-auto mb-8">
+                <div class="flex flex-wrap justify-center gap-2 bg-white p-2 rounded-xl shadow-sm inline-flex mx-auto w-full md:w-auto">
+                    <button onclick="switchDirection('X')" id="tab-X" class="tab-btn px-6 py-3 rounded-lg font-semibold transition tab-active">X Direction</button>
+                    <button onclick="switchDirection('Y')" id="tab-Y" class="tab-btn px-6 py-3 rounded-lg font-semibold transition hover:bg-slate-100 text-slate-600">Y Direction</button>
+                    <button onclick="switchDirection('Z')" id="tab-Z" class="tab-btn px-6 py-3 rounded-lg font-semibold transition hover:bg-slate-100 text-slate-600">Z Direction</button>
+                </div>
+            </div>
+
+            <!-- Sigma Toggle -->
+            <div class="max-w-5xl mx-auto mb-8 flex justify-center">
+                <div class="bg-white rounded-lg p-1 shadow-sm inline-flex">
+                    <button onclick="setSigma(1)" id="sigma-1" class="px-6 py-2 rounded-md font-medium transition bg-blue-100 text-blue-700">1 Sigma (GRMS)</button>
+                    <button onclick="setSigma(3)" id="sigma-3" class="px-6 py-2 rounded-md font-medium transition text-slate-600 hover:bg-slate-50">3 Sigma</button>
+                </div>
+            </div>
+
+            <!-- Calculator Grid -->
+            <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+
+                <!-- Input Panel -->
+                <div class="bg-white rounded-2xl shadow-lg p-8">
+                    <h4 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        Input Parameters
+                    </h4>
+
+                    <div class="space-y-5">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="input-group">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Load (GRMS)</label>
+                                <div class="relative">
+                                    <input type="number" id="load" value="11.8" step="0.1" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                    <span class="absolute right-3 top-3 text-slate-400 text-sm">g</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Mass</label>
+                                <div class="relative">
+                                    <input type="number" id="mass" value="0.12" step="0.01" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                    <span class="absolute right-3 top-3 text-slate-400 text-sm">kg</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="input-group">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Width (b)</label>
+                                <div class="relative">
+                                    <input type="number" id="width" value="0.0007" step="0.0001" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                    <span class="absolute right-3 top-3 text-slate-400 text-sm">m</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Length (L)</label>
+                                <div class="relative">
+                                    <input type="number" id="length" value="0.128" step="0.001" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                    <span class="absolute right-3 top-3 text-slate-400 text-sm">m</span>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">Thickness (h)</label>
+                                <div class="relative">
+                                    <input type="number" id="thickness" value="0.111" step="0.001" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                    <span class="absolute right-3 top-3 text-slate-400 text-sm">m</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Gravity (g)</label>
+                            <div class="relative">
+                                <input type="number" id="gravity" value="9.81" step="0.01" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                <span class="absolute right-3 top-3 text-slate-400 text-sm">m/s²</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="block text-sm font-semibold text-slate-700 mb-1">Material Yield Stress (Al 6061)</label>
+                            <div class="relative">
+                                <input type="number" id="yield" value="240" step="1" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:outline-none transition font-mono text-lg" oninput="calculate()">
+                                <span class="absolute right-3 top-3 text-slate-400 text-sm">MPa</span>
+                            </div>
+                        </div>
+
+                        <button onclick="resetDefaults()" class="w-full py-3 border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 rounded-lg font-semibold transition text-slate-600">
+                            Reset to Defaults
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="space-y-6">
+                    <!-- Main Results -->
+                    <div class="bg-white rounded-2xl shadow-lg p-8">
+                        <h4 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                            <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            Analysis Results
+                        </h4>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium">Acceleration</span>
+                                <span class="font-mono font-bold text-slate-900"><span id="acc">115.76</span> m/s²</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium">Force on Component</span>
+                                <span class="font-mono font-bold text-slate-900"><span id="force">13.89</span> N</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium">Max Bending Moment</span>
+                                <span class="font-mono font-bold text-slate-900"><span id="moment">0.445</span> N·m</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium">Moment of Inertia (I)</span>
+                                <span class="font-mono font-bold text-slate-900"><span id="inertia">7.978×10⁻⁸</span> m⁴</span>
+                            </div>
+                            <div class="flex justify-between items-center p-4 bg-slate-50 rounded-lg">
+                                <span class="text-slate-600 font-medium">Half Thickness (c)</span>
+                                <span class="font-mono font-bold text-slate-900"><span id="half">0.0555</span> m</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-slate-700 font-semibold">Bending Stress (σ)</span>
+                                <span class="text-3xl font-black text-blue-700 font-mono"><span id="stress">0.309</span> MPa</span>
+                            </div>
+                            <div class="w-full bg-white rounded-full h-3 mb-2 overflow-hidden">
+                                <div id="stress-bar" class="stress-bar h-full bg-gradient-to-r from-blue-500 to-blue-700 rounded-full" style="width: 0.13%"></div>
+                            </div>
+                            <div class="text-xs text-slate-500 text-right"><span id="stress-pa">309,236</span> N/m²</div>
+                        </div>
+
+                        <div class="mt-4 p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-slate-700 font-semibold">Factor of Safety</span>
+                                <span class="text-3xl font-black text-emerald-700 font-mono"><span id="fos">777.1</span></span>
+                            </div>
+                            <div class="w-full bg-white rounded-full h-3 mb-2 overflow-hidden">
+                                <div id="fos-bar" class="stress-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full" style="width: 100%"></div>
+                            </div>
+                            <div class="text-xs text-slate-500 text-right">Yield Stress: <span id="yield-display">240</span> MPa</div>
+                        </div>
+                    </div>
+
+                    <!-- Direction Indicator -->
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h5 class="font-bold text-slate-900 mb-4">Load Direction Visualization</h5>
+                        <div class="flex justify-center">
+                            <canvas id="beamCanvas" width="300" height="200" class="border border-slate-200 rounded-lg bg-slate-50"></canvas>
+                        </div>
+                        <p class="text-center text-sm text-slate-500 mt-3" id="direction-desc">
+                            Load applied in X direction. Bending about Y-Y axis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section id="analysis" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-slate-900 mb-4">Multi-Directional Analysis Summary</h3>
+                <p class="text-slate-600">Complete stress analysis across all loading directions and sigma levels.</p>
+            </div>
+
+            <div class="max-w-5xl mx-auto overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-900 text-white">
+                            <th class="p-4 rounded-tl-lg">Direction</th>
+                            <th class="p-4">Sigma Level</th>
+                            <th class="p-4">Bending Stress (MPa)</th>
+                            <th class="p-4">FOS (Al 6061)</th>
+                            <th class="p-4 rounded-tr-lg">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr class="border-b border-slate-200 hover:bg-slate-50">
+                            <td class="p-4 font-semibold text-blue-700">X Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">1σ</span></td>
+                            <td class="p-4 font-mono">0.309</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">777.1</td>
+                            <td class="p-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Safe</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-200 hover:bg-slate-50">
+                            <td class="p-4 font-semibold text-blue-700">X Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">3σ</span></td>
+                            <td class="p-4 font-mono">0.928</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">258.7</td>
+                            <td class="p-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Safe</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-200 hover:bg-slate-50">
+                            <td class="p-4 font-semibold text-blue-700">Y Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">1σ</span></td>
+                            <td class="p-4 font-mono">49.036</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">4.89</td>
+                            <td class="p-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Safe</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-200 hover:bg-slate-50 bg-red-50/50">
+                            <td class="p-4 font-semibold text-blue-700">Y Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">3σ</span></td>
+                            <td class="p-4 font-mono font-bold text-red-600">147.108</td>
+                            <td class="p-4 font-mono text-amber-600 font-bold">1.63</td>
+                            <td class="p-4"><span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold">Review</span></td>
+                        </tr>
+                        <tr class="border-b border-slate-200 hover:bg-slate-50">
+                            <td class="p-4 font-semibold text-blue-700">Z Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">1σ</span></td>
+                            <td class="p-4 font-mono">0.202</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">1189.4</td>
+                            <td class="p-4"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Safe</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="p-4 font-semibold text-blue-700 rounded-bl-lg">Z Direction</td>
+                            <td class="p-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">3σ</span></td>
+                            <td class="p-4 font-mono">0.605</td>
+                            <td class="p-4 font-mono text-emerald-600 font-bold">396.5</td>
+                            <td class="p-4 rounded-br-lg"><span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-sm font-semibold">Safe</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="max-w-5xl mx-auto mt-8 p-6 bg-amber-50 border border-amber-200 rounded-xl">
+                <div class="flex items-start">
+                    <svg class="w-6 h-6 text-amber-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <div>
+                        <h5 class="font-bold text-amber-900 mb-1">Engineering Note</h5>
+                        <p class="text-amber-800 text-sm">
+                            Y-Direction at 3σ shows the highest stress (147.1 MPa) with the lowest FOS (1.63). 
+                            This is the critical load case. Consider design modifications or material upgrade if sustained 3σ loading is expected.
+                            X and Z directions show negligible stress due to high moment of inertia relative to loading.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h4 class="text-white font-bold text-lg mb-1">CENTUM ELECTRONICS LIMITED</h4>
+                    <p class="text-sm">Professional Bending Stress Analysis Tool v2.0</p>
+                </div>
+                <div class="text-sm text-slate-500">
+                    <p>Based on Euler-Bernoulli Beam Theory | σ = Mc/I</p>
+                    <p class="mt-1">Engineering Analysis Suite © 2026</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // State management
+        let currentDirection = 'X';
+        let currentSigma = 1;
+
+        // Default values from Excel for each direction
+        const defaults = {
+            'X': { width: 0.0007, length: 0.128, thickness: 0.111, load: 11.8 },
+            'Y': { width: 0.111, length: 0.128, thickness: 0.0007, load: 11.8 },
+            'Z': { width: 0.0007, length: 0.111, thickness: 0.128, load: 11.8 }
+        };
+
+        function switchDirection(dir) {
+            currentDirection = dir;
+
+            // Update tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-active', 'text-white');
+                btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+            document.getElementById('tab-' + dir).classList.add('tab-active', 'text-white');
+            document.getElementById('tab-' + dir).classList.remove('text-slate-600', 'hover:bg-slate-100');
+
+            // Set defaults for direction
+            const d = defaults[dir];
+            document.getElementById('width').value = d.width;
+            document.getElementById('length').value = d.length;
+            document.getElementById('thickness').value = d.thickness;
+            document.getElementById('load').value = d.load * currentSigma;
+
+            updateDirectionDesc();
+            calculate();
+        }
+
+        function setSigma(sigma) {
+            currentSigma = sigma;
+
+            // Update buttons
+            document.getElementById('sigma-1').className = sigma === 1 ? 
+                'px-6 py-2 rounded-md font-medium transition bg-blue-100 text-blue-700' : 
+                'px-6 py-2 rounded-md font-medium transition text-slate-600 hover:bg-slate-50';
+            document.getElementById('sigma-3').className = sigma === 3 ? 
+                'px-6 py-2 rounded-md font-medium transition bg-blue-100 text-blue-700' : 
+                'px-6 py-2 rounded-md font-medium transition text-slate-600 hover:bg-slate-50';
+
+            // Update load value
+            const baseLoad = defaults[currentDirection].load;
+            document.getElementById('load').value = (baseLoad * sigma).toFixed(1);
+
+            calculate();
+        }
+
+        function updateDirectionDesc() {
+            const desc = document.getElementById('direction-desc');
+            const dims = {
+                'X': { w: 'thickness (h)', h: 'width (b)', bend: 'Y-Y' },
+                'Y': { w: 'width (b)', h: 'thickness (h)', bend: 'X-X' },
+                'Z': { w: 'thickness (h)', h: 'width (b)', bend: 'Y-Y' }
+            };
+            const d = dims[currentDirection];
+            desc.textContent = `Load applied in ${currentDirection} direction. Bending about ${d.bend} axis. Width = ${d.w}, Height = ${d.h}.`;
+            drawBeam();
+        }
+
+        function calculate() {
+            const load = parseFloat(document.getElementById('load').value) || 0;
+            const mass = parseFloat(document.getElementById('mass').value) || 0;
+            const width = parseFloat(document.getElementById('width').value) || 0;
+            const length = parseFloat(document.getElementById('length').value) || 0;
+            const thickness = parseFloat(document.getElementById('thickness').value) || 0;
+            const gravity = parseFloat(document.getElementById('gravity').value) || 9.81;
+            const yieldStress = parseFloat(document.getElementById('yield').value) || 240;
+
+            // Calculations
+            const acceleration = load * gravity;
+            const force = mass * acceleration;
+            const moment = force * length; // For cantilever: M = F * L
+            const inertia = (width * Math.pow(thickness, 3)) / 12;
+            const halfThickness = thickness / 2;
+            const stressPa = (moment * halfThickness) / inertia;
+            const stressMPa = stressPa / 1e6;
+            const fos = yieldStress / stressMPa;
+
+            // Update DOM
+            document.getElementById('acc').textContent = acceleration.toFixed(3);
+            document.getElementById('force').textContent = force.toFixed(3);
+            document.getElementById('moment').textContent = moment.toFixed(3);
+
+            // Format inertia in scientific notation
+            const inertiaExp = inertia.toExponential(3);
+            document.getElementById('inertia').textContent = inertiaExp.replace('e', '×10^').replace('+', '');
+
+            document.getElementById('half').textContent = halfThickness.toFixed(4);
+            document.getElementById('stress').textContent = stressMPa.toFixed(3);
+            document.getElementById('stress-pa').textContent = stressPa.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('fos').textContent = fos.toFixed(2);
+            document.getElementById('yield-display').textContent = yieldStress;
+
+            // Update stress bar (max 200 MPa for scale)
+            const stressPercent = Math.min((stressMPa / 200) * 100, 100);
+            document.getElementById('stress-bar').style.width = stressPercent + '%';
+
+            // Color code stress bar
+            const bar = document.getElementById('stress-bar');
+            if (stressMPa > 180) {
+                bar.className = 'stress-bar h-full bg-gradient-to-r from-red-500 to-red-700 rounded-full';
+            } else if (stressMPa > 120) {
+                bar.className = 'stress-bar h-full bg-gradient-to-r from-amber-500 to-amber-700 rounded-full';
+            } else {
+                bar.className = 'stress-bar h-full bg-gradient-to-r from-blue-500 to-blue-700 rounded-full';
+            }
+
+            // FOS bar (green if > 2, amber if 1.5-2, red if < 1.5)
+            const fosPercent = Math.min((fos / 5) * 100, 100);
+            document.getElementById('fos-bar').style.width = fosPercent + '%';
+
+            const fosBar = document.getElementById('fos-bar');
+            if (fos < 1.5) {
+                fosBar.className = 'stress-bar h-full bg-gradient-to-r from-red-500 to-red-700 rounded-full';
+            } else if (fos < 2) {
+                fosBar.className = 'stress-bar h-full bg-gradient-to-r from-amber-500 to-amber-700 rounded-full';
+            } else {
+                fosBar.className = 'stress-bar h-full bg-gradient-to-r from-emerald-500 to-emerald-700 rounded-full';
+            }
+
+            drawBeam();
+        }
+
+        function drawBeam() {
+            const canvas = document.getElementById('beamCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width;
+            const h = canvas.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw beam based on direction
+            ctx.fillStyle = '#e2e8f0';
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+
+            const beamL = 200;
+            const beamH = 40;
+            const startX = 50;
+            const startY = h / 2;
+
+            // Draw beam
+            ctx.fillRect(startX, startY - beamH/2, beamL, beamH);
+            ctx.strokeRect(startX, startY - beamH/2, beamL, beamH);
+
+            // Draw fixed support (left side)
+            ctx.fillStyle = '#64748b';
+            ctx.fillRect(startX - 10, startY - beamH/2 - 10, 10, beamH + 20);
+
+            // Hatching for fixed support
+            ctx.beginPath();
+            for (let i = startY - beamH/2 - 10; i < startY + beamH/2 + 10; i += 8) {
+                ctx.moveTo(startX - 10, i);
+                ctx.lineTo(startX - 18, i + 8);
+            }
+            ctx.strokeStyle = '#475569';
+            ctx.stroke();
+
+            // Draw load arrow
+            ctx.strokeStyle = '#ef4444';
+            ctx.fillStyle = '#ef4444';
+            ctx.lineWidth = 3;
+
+            const arrowX = startX + beamL;
+            const arrowY = startY;
+            let endX, endY;
+
+            if (currentDirection === 'X') {
+                // Right arrow
+                endX = arrowX + 50;
+                endY = arrowY;
+                ctx.beginPath();
+                ctx.moveTo(arrowX + 5, arrowY);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+                // Arrowhead
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - 10, endY - 6);
+                ctx.lineTo(endX - 10, endY + 6);
+                ctx.closePath();
+                ctx.fill();
+            } else if (currentDirection === 'Y') {
+                // Down arrow
+                endX = arrowX;
+                endY = arrowY + 50;
+                ctx.beginPath();
+                ctx.moveTo(arrowX, arrowY + beamH/2 + 5);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - 6, endY - 10);
+                ctx.lineTo(endX + 6, endY - 10);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                // Into page (Z) - draw circle with X
+                ctx.beginPath();
+                ctx.arc(arrowX + 25, arrowY, 15, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(arrowX + 18, arrowY - 7);
+                ctx.lineTo(arrowX + 32, arrowY + 7);
+                ctx.moveTo(arrowX + 32, arrowY - 7);
+                ctx.lineTo(arrowX + 18, arrowY + 7);
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.fillStyle = '#334155';
+            ctx.font = '12px Inter';
+            ctx.fillText('Fixed', startX - 35, startY + 4);
+            ctx.fillText('Free End', arrowX - 25, startY - beamH/2 - 15);
+
+            ctx.fillStyle = '#ef4444';
+            ctx.font = 'bold 12px Inter';
+            if (currentDirection === 'X') ctx.fillText('F (X)', endX - 20, endY - 10);
+            else if (currentDirection === 'Y') ctx.fillText('F (Y)', endX + 10, endY - 5);
+            else ctx.fillText('F (Z)', arrowX + 45, startY + 4);
+        }
+
+        function resetDefaults() {
+            document.getElementById('mass').value = 0.12;
+            document.getElementById('gravity').value = 9.81;
+            document.getElementById('yield').value = 240;
+            switchDirection(currentDirection);
+        }
+
+        // Initialize
+        window.onload = function() {
+            calculate();
+            updateDirectionDesc();
+        };
+    </script>
+</body>
+</html>
